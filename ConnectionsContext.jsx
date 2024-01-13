@@ -5,12 +5,12 @@ const JsPyTextSocketContext = createContext();
 
 const JsPyTextSocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
+  const [url, setUrl] = useState('ws://localhost:8000');
   const [socketId, setSocketId] = useState(null);
   const [disconnectReason, setDisconnectReason] = useState('It has not been initialized yet.');
   const [protocol_table, setProtocolTable] = useState(new Map());
   const [socket_events, setSocketEvents] = useState([]);
 
-  const url = "your_socket_server_url"; // Replace with your actual socket server URL
 
   useEffect(() => {
     const query = { 'client_id': '5555' };
@@ -60,7 +60,9 @@ const JsPyTextSocketProvider = ({ children }) => {
   const sendJson = (sendObj) => {
     socket.emit('send_json', sendObj);
   };
-
+  const initUrl = (new_url) => {
+    return setUrl(new_url);
+  };
   const getSocketId = () => {
     return socketId;
   };
@@ -100,16 +102,17 @@ const JsPyTextSocketProvider = ({ children }) => {
   }, [protocol_table]);
 
     const contextValue = useMemo(() => ({
-    closeSocket,
-    isSocketReady,
-    sendJson,
-    getSocketId,
-    addProtocol,
-    addCloseEvent,
-    clearCloseEvent,
-    socketId,
-    disconnectReason,
-  }), []);
+      initUrl,
+      closeSocket,
+      isSocketReady,
+      sendJson,
+      getSocketId,
+      addProtocol,
+      addCloseEvent,
+      clearCloseEvent,
+      socketId,
+      disconnectReason,
+    }), []);
 
   return (
     <JsPyTextSocketContext.Provider value={contextValue}>
